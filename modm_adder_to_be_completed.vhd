@@ -3,7 +3,6 @@ use IEEE.std_logic_1164.all;
 use IEEE.std_logic_arith.all;
 use IEEE.std_logic_unsigned.all;
 
-
 package dar_modm_multiplier_parameters is
   constant K: integer := 8;
   constant logK: integer := 3;
@@ -18,17 +17,16 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
-use IEEE.numeric_std.ALL;
 use work.dar_modm_multiplier_parameters.all;
 
-entity modm_adder_to_be_completed is
+entity modm_adder is
 port (
   x, y: in std_logic_vector(K-1 downto 0);
   z: out std_logic_vector(K-1 downto 0)
 );
-end modm_adder_to_be_completed;
+end modm_adder;
 
-architecture rtl of modm_adder_to_be_completed is
+architecture rtl of modm_adder is
   signal long_x, sum1, long_z1, sum2: std_logic_vector(K downto 0);
   signal c1, c2, sel: std_logic;
   signal z1, z2: std_logic_vector(K-1 downto 0);
@@ -38,14 +36,11 @@ begin
   sum1 <= long_x + y;
   c1 <= sum1(K);
   z1 <= sum1(K-1 downto 0);
- -- sum2 <= z1 mod std_logic_vector(to_unsigned((2**k),k)) + std_logic_vector(to_unsigned((2**k),k)) - m;
--- sum2 <= z1 mod std_logic_vector(to_unsigned((2**k),k)) + std_logic_vector(to_unsigned((2**k),k)) - m
-   
-  long_z1 <= '0'& z1;
   
-  sum2 <= long_z1 +  minus_M;
-  c2 <= sum2(k); 
-  z2 <= sum2(k-1 downto 0);
+  long_z1 <= '0' & z1; -- adding an extra bit to the left of long z1
+  sum2 <= long_z1 + minus_M ; -- z2 mod (2**k);
+  c2 <= sum2(K);
+  z2 <= sum2(K-1 downto 0);
   sel <= c1 or c2;
   with sel select z <= z1 when '0', z2 when others;
 end rtl;
