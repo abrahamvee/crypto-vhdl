@@ -1,7 +1,7 @@
 ----------------------------------------------------------------------------
 -- Double, Add and Reduce Multiplier (dar_modm_multiplier.vhd)
 --  dar_mod_multiplier
-----------------------------------------------------------------------------
+------------------------------------------------------------------------------
 library IEEE;
 use IEEE.std_logic_1164.all;
 use IEEE.std_logic_arith.all;
@@ -15,7 +15,6 @@ package dar_modm_multiplier_parameters is
   constant minus_M: std_logic_vector(K-1 downto 0) := conv_std_logic_vector(2**k - integer_M, K);
   constant ZERO: std_logic_vector(logK-1 downto 0) := (others => '0');
 end dar_modm_multiplier_parameters;
-
 
 library ieee; 
 use ieee.std_logic_1164.all;
@@ -39,7 +38,7 @@ architecture rtl of dar_modm_multiplier is
   signal current_state: states;
   signal count: std_logic_vector(logK-1 downto 0);
 
-  component modm_adder is
+  component modm_adder_to_be_completed is
   port (
     x, y: in std_logic_vector(K-1 downto 0);
     z: out std_logic_vector(K-1 downto 0));
@@ -49,8 +48,8 @@ begin
 
   with step_type select second_operand <= p when '0', y when others;
 
-  main_component: modm_adder port map(p, second_operand, sum);
-
+  main_component: modm_adder_to_be_completed port map(p, second_operand, sum);
+  
   condition <= ce_p and (not(step_type) or x_i);
 
   parallel_register: process(clk)
@@ -95,12 +94,11 @@ begin
    
   control_unit: process(clk, reset, current_state, equal_zero)
   begin
-  
   case current_state is
     when 0 to 1 => 	step_type <= '0'; ce_p <= '0'; load <= '0'; update <= '0'; done <= '1';
-    when 2 => step_type <= '0'; ce_p <= '0'; load <= '1'; update <= '0'; done <= '0';
-    when 3 => step_type <= '0'; ce_p <= '1'; load <= '0'; update <= '0'; done <= '0';
-    when 4 => step_type <= '1'; ce_p <= '1'; load <= '0'; update <= '1'; done <= '0';
+    when 2 => 			step_type <= '0'; ce_p <= '0'; load <= '1'; update <= '0'; done <= '0';
+    when 3 => 			step_type <= '0'; ce_p <= '1'; load <= '0'; update <= '0'; done <= '0';
+    when 4 => 			step_type <= '1'; ce_p <= '1'; load <= '0'; update <= '1'; done <= '0';
   end case;
 
   if reset = '1' then 

@@ -19,14 +19,14 @@ use ieee.std_logic_arith.all;
 use ieee.std_logic_unsigned.all;
 use work.dar_modm_multiplier_parameters.all;
 
-entity modm_adder is
+entity modm_adder_to_be_completed is
 port (
   x, y: in std_logic_vector(K-1 downto 0);
   z: out std_logic_vector(K-1 downto 0)
 );
-end modm_adder;
+end modm_adder_to_be_completed;
 
-architecture rtl of modm_adder is
+architecture rtl of modm_adder_to_be_completed is
   signal long_x, sum1, long_z1, sum2: std_logic_vector(K downto 0);
   signal c1, c2, sel: std_logic;
   signal z1, z2: std_logic_vector(K-1 downto 0);
@@ -37,8 +37,8 @@ begin
   c1 <= sum1(K);
   z1 <= sum1(K-1 downto 0);
   
-  long_z1 <= '0' & z1; -- adding an extra bit to the left of long z1
-  sum2 <= long_z1 + minus_M ; -- z2 mod (2**k);
+  long_z1 <= '0' & z1;
+  sum2 <= long_z1 + minus_M;
   c2 <= sum2(K);
   z2 <= sum2(K-1 downto 0);
   sel <= c1 or c2;
